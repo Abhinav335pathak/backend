@@ -2,46 +2,40 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const path = require('path');
+const cors = require('cors');
+
+dotenv.config();
+const app = express();
+
+console.log('MONGODB_URI:', process.env.MONGODB_URI);
+
 const authRoutes = require('./routes/authRoutes');
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const menuItemRoutes = require('./routes/menuItemRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 const errorMiddleware = require('./middleware/errorMiddleware');
-const uploadRoutes= require('./routes/uploadRoutes.js');
-
-
-const cors = require('cors');
-
-const path = require('path');
-
-dotenv.config();  // Load environment variables from .env file
-
-console.log('MONGODB_URI from env:', process.env.MONGODB_URI);  // Debugging log
-
-const app = express();
 
 // Middleware
-app.use(express.json()); // <-- THIS parses JSON bodies
-
-// optional: also parse URL-encoded (for form posts)
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());  // Parse cookies for JWT
-app.use('/uploads', express.static('uploads'));  // Serve uploaded files
+app.use(cookieParser());
+app.use('/uploads', express.static('uploads'));
 app.use(cors({
-  origin: 'https://frontened-git-main-abhinav335pathaks-projects.vercel.app',  // deployed frontend
+  origin: 'https://frontened-git-main-abhinav335pathaks-projects.vercel.app', // Vercel frontend
   credentials: true,
 }));
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {  // Updated to use MONGODB_URI
+// MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-
 .then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+.catch((err) => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -52,40 +46,16 @@ app.use('/api/menu-items', menuItemRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/reviews', reviewRoutes);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running' });
-});
+// Health check
+app.get('/api/health', (req, res) => res.json({ status: 'OK', message: 'Server is running' }));
 
+// Serve frontend if needed (optional)
 const frontendPath = path.join(__dirname, '../frontened/dist');
 app.use(express.static(frontendPath));
+app.get('/', (req, res) => res.sendFile(path.join(frontendPath, 'index.html')));
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-});
-// Global error handler
+// Error middleware
 app.use(errorMiddleware);
-
-
-
-
-
-
-// const bcrypt = require('bcryptjs');
-
-// const Restaurant = require('./models/Restaurant');
-
-// async function reset() {
-//   const hashed = await bcrypt.hash('Test1234', 10);
-//   await Restaurant.updateOne({ email: 'pizzapalace@example.com' }, { password: hashed });
-//   console.log('Password reset done!');
-//   mongoose.disconnect();
-// }
-
-// reset();
-
-
-
 
 // Start server
 const PORT = process.env.PORT || 3000;
