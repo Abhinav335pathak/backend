@@ -15,7 +15,23 @@ const menuItemSchema = new mongoose.Schema(
       enum: ['starter', 'main course', 'dessert', 'drink'],
       default: 'main course',
     },
-    imageUrl: { type: String }, // ✅ renamed from "image"
+
+    // ✅ Cloudinary fields
+    imageUrl: {
+      type: String,
+      required: false,
+      default: '', // Cloudinary secure_url
+    },
+    publicId: {
+      type: String,
+      required: false, // Cloudinary public_id for deletion/update
+    },
+
+    status: {
+      type: String,
+      enum: ['available', 'out-of-stock'],
+      default: 'available',
+    },
   },
   { timestamps: true }
 );

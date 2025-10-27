@@ -9,6 +9,9 @@ const orderRoutes = require('./routes/orderRoutes');
 const menuItemRoutes = require('./routes/menuItemRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const errorMiddleware = require('./middleware/errorMiddleware');
+const uploadRoutes= require('./routes/uploadRoutes.js');
+
+
 const cors = require('cors');
 
 const path = require('path');
@@ -45,6 +48,7 @@ app.use('/api/restaurant', restaurantRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/menu-items', menuItemRoutes);
+app.use('/api/upload', uploadRoutes);
 app.use('/api/reviews', reviewRoutes);
 
 // Health check endpoint
