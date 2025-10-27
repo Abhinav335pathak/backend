@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/uploads', express.static('uploads'));
 app.use(cors({
-  origin: 'https://frontened-git-main-abhinav335pathaks-projects.vercel.app', // Vercel frontend
+  origin: 'https://frontened-lilac.vercel.app/', // Vercel frontend
   credentials: true,
 }));
 
