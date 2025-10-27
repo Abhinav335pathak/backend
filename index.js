@@ -30,9 +30,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());  // Parse cookies for JWT
 app.use('/uploads', express.static('uploads'));  // Serve uploaded files
 app.use(cors({
-  origin: 'http://localhost:5173',  // your frontend port (Vite default)
-  credentials: true,                 // <-- THIS IS REQUIRED for cookies
+  origin: 'https://frontened-git-main-abhinav335pathaks-projects.vercel.app',  // deployed frontend
+  credentials: true,
 }));
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {  // Updated to use MONGODB_URI
   useNewUrlParser: true,
